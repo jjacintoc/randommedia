@@ -14,6 +14,7 @@ import {
 const Publicar = (props) => {
   useEffect(() => {
     props.fetchAllPublicar();
+    console.log(props);
   }, []);
   return (
     <>
@@ -30,6 +31,7 @@ const Publicar = (props) => {
                     <th scope="col">PostID</th>
                     <th scope="col">Categoria</th>
                     <th scope="col">Titulo</th>
+                    <th scope="col">Conteudo</th>
                     <th scope="col">Imagem</th>
                     <th scope="col">Likeness</th>
                     <th scope="col">Tipo</th>
@@ -41,19 +43,20 @@ const Publicar = (props) => {
                 </thead>
                 <tbody>
                   {props.publicarList.map((record, index) => {
+                    console.log(record.postID);
                     return (
                       <tr key={index}>
-                        <td>{record.PostID}</td>
-                        <td>{record.PostCategory}</td>
-                        <td>{record.PostTitle}</td>
-                        <td>{record.PostContent}</td>
-                        <td>{record.PostImage}</td>
-                        <td>{record.PostLikeness}</td>
-                        <td>{record.PostType}</td>
-                        <td>{record.PostViews}</td>
-                        <td>{record.PinnedPost}</td>
-                        <td>{record.PostDate}</td>
-                        <td>{record.Username}</td>
+                        <td>{record.postID}</td>
+                        <td>{record.postCategory}</td>
+                        <td>{record.postTitle}</td>
+                        <td>{record.postContent}</td>
+                        <td>{record.postImage}</td>
+                        <td>{record.postLikeness}</td>
+                        <td>{record.postType}</td>
+                        <td>{record.postViews}</td>
+                        <td>{record.pinnedPost}</td>
+                        <td>{record.postDate}</td>
+                        <td>{record.username}</td>
                       </tr>
                     );
                   })}

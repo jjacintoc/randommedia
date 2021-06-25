@@ -2,6 +2,7 @@ import axios from "axios";
 
 const baseURL = "https://localhost:44363/api/";
 
+//criar funçoes de CRUD
 export default {
   publicar(url = baseURL + "Posts/") {
     return {
