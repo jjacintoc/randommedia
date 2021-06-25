@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Grid,
   TextField,
@@ -10,6 +10,8 @@ import {
   Button,
   FormHelperText,
 } from "@material-ui/core";
+import { connect } from "react-redux";
+import * as actions from "../actions/publicarActions";
 
 // import {
 //   KeyboardDatePicker,
@@ -70,6 +72,7 @@ const PublicarForm = ({ classes, ...props }) => {
   const [values, setValues] = useState(valoresIniciais);
   const [errors, setErrors] = useState({});
 
+  //trata dos inputs do form
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setValues({
@@ -82,9 +85,26 @@ const PublicarForm = ({ classes, ...props }) => {
     e.preventDefault(); //parar o comportamento default do html
     console.log(values);
     if (validate()) {
-      window.alert("Validação feita sem problemas");
+      if (props.currentId == 0)
+        //se igual a 0 fazemos insert
+        props.createPublicar(values, () => {
+          window.alert("Dados Inseridos na Base de dados");
+        });
+      //senao fazemos update
+      else
+        props.updatePublicar(props.currentId, values, () => {
+          window.alert("Dados Atualizados na Base de dados");
+        });
     }
   };
+
+  useEffect(() => {
+    if (props.currentId !== 0)
+      //se nao estiver a 0, da update aos setvalues
+      setValues({
+        ...props.publicarList.find((x) => x.id === props.currentId),
+      });
+  }, [props.currentId]); //so faz render quando existe mudança no currentid
 
   return (
     <>
@@ -96,7 +116,7 @@ const PublicarForm = ({ classes, ...props }) => {
           onSubmit={handleSubmit}
         >
           <Grid container>
-            <Grid item xs={11}>
+            <Grid item xs={12}>
               <TextField
                 name="Categoria"
                 value={values.Categoria}
@@ -174,7 +194,7 @@ const PublicarForm = ({ classes, ...props }) => {
                   helperText: errors.Views,
                 })} //verifica se existe algum erro, se sim mostra o error como true e muda o helper text
               ></TextField>
-              <FormControl
+              {/* <FormControl
                 className={classes.formControl}
                 {...(errors.Pinned && { error: true })}
               >
@@ -185,13 +205,13 @@ const PublicarForm = ({ classes, ...props }) => {
                   onChange={handleInputChange}
                 >
                   <MenuItem value="">Quer destacar o post?</MenuItem>
-                  <MenuItem value="True">Sim</MenuItem>
-                  <MenuItem value="False">Nao</MenuItem>
+                  <MenuItem value="true">Sim</MenuItem>
+                  <MenuItem value="false">Nao</MenuItem>
                 </Select>
                 {errors.pinned && (
                   <FormHelperText>{errors.pinned}</FormHelperText>
                 )}
-              </FormControl>
+              </FormControl> */}
               {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
                 <KeyboardDatePicker
                   disableToolbar
@@ -247,9 +267,6 @@ const PublicarForm = ({ classes, ...props }) => {
                 </Button>
               </div>
             </Grid>
-            <Grid item xs={1}>
-              sss
-            </Grid>
           </Grid>
         </form>
       </div>
@@ -257,4 +274,19 @@ const PublicarForm = ({ classes, ...props }) => {
   );
 };
 
-export default withStyles(styles)(PublicarForm);
+//publicar list acede a lista da tabela de todas as publicaçoes
+const mapStateToProps = (state) => {
+  return {
+    publicarList: state.publicar.list,
+  };
+};
+
+const mapActionToProps = {
+  createPublicar: actions.create,
+  updatePublicar: actions.update,
+};
+
+export default connect(
+  mapStateToProps,
+  mapActionToProps
+)(withStyles(styles)(PublicarForm));

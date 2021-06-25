@@ -3,15 +3,23 @@ import { connect } from "react-redux";
 import * as actions from "../actions/publicarActions";
 import PublicarForm from "./PublicarForm";
 import {
-  Table,
-  TableContainer,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
+  // Table,
+  // TableContainer,
+  // TableHead,
+  // TableRow,
+  // TableCell,
+  // TableBody,
+  Button,
+  ButtonGroup,
 } from "@material-ui/core";
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+
+import "./publicar.css";
 
 const Publicar = (props) => {
+  const [currentId, setCurrentId] = useState(0); //passar valores da lista para o form
+
   useEffect(() => {
     props.fetchAllPublicar();
     console.log(props);
@@ -21,10 +29,10 @@ const Publicar = (props) => {
       <section id="publicar">
         <div className="conteudoPublicar">
           <div className="row">
-            <div className="col-6">
-              <PublicarForm></PublicarForm>
+            <div className="col-4">
+              <PublicarForm {...{ currentId, setCurrentId }}></PublicarForm>
             </div>
-            <div className="col-6">
+            <div className="col-8">
               <table class="table">
                 <thead>
                   <tr>
@@ -36,13 +44,15 @@ const Publicar = (props) => {
                     <th scope="col">Likeness</th>
                     <th scope="col">Tipo</th>
                     <th scope="col">Views</th>
-                    <th scope="col">Pinned</th>
+                    {/* <th scope="col">Pinned</th> */}
                     <th scope="col">Data</th>
                     <th scope="col">Utilizador</th>
+                    <th scope="col">Operações</th>
                   </tr>
                 </thead>
                 <tbody>
                   {props.publicarList.map((record, index) => {
+                    //callback function para os registos
                     console.log(record.postID);
                     return (
                       <tr key={index}>
@@ -54,9 +64,24 @@ const Publicar = (props) => {
                         <td>{record.postLikeness}</td>
                         <td>{record.postType}</td>
                         <td>{record.postViews}</td>
-                        <td>{record.pinnedPost}</td>
+                        {/* <td>{record.pinnedPost}</td> */}
                         <td>{record.postDate}</td>
                         <td>{record.username}</td>
+                        <td className="espaco">
+                          <ButtonGroup>
+                            <Button>
+                              <EditIcon
+                                color="primary"
+                                onClick={() => {
+                                  setCurrentId(record.postID);
+                                }}
+                              ></EditIcon>
+                            </Button>
+                            <Button>
+                              <DeleteIcon color="primary"></DeleteIcon>
+                            </Button>
+                          </ButtonGroup>
+                        </td>
                       </tr>
                     );
                   })}
@@ -82,44 +107,6 @@ const mapActionToProps = {
 };
 
 export default connect(mapStateToProps, mapActionToProps)(Publicar);
-
-{
-  /* <table class="table">
-  <thead>
-    <tr>
-      <th scope="col">PostID</th>
-      <th scope="col">Categoria</th>
-      <th scope="col">Titulo</th>
-      <th scope="col">Imagem</th>
-      <th scope="col">Likeness</th>
-      <th scope="col">Tipo</th>
-      <th scope="col">views</th>
-      <th scope="col">pinned</th>
-      <th scope="col">data</th>
-      <th scope="col">utilizador</th>
-    </tr>
-  </thead>
-  <tbody>
-    {props.publicarList.map((record, index) => {
-      return (
-        <tr key={index}>
-          <td key={index}>{record.PostID}</td>
-          <td>{record.PostCategory}</td>
-          <td>{record.PostTitle}</td>
-          <td>{record.PostContent}</td>
-          <td>{record.PostImage}</td>
-          <td>{record.PostLikeness}</td>
-          <td>{record.PostType}</td>
-          <td>{record.PostViews}</td>
-          <td>{record.PinnedPost}</td>
-          <td>{record.PostDate}</td>
-          <td>{record.Username}</td>
-        </tr>
-      );
-    })}
-  </tbody>
-</table>; */
-}
 
 {
   /* <TableContainer>
