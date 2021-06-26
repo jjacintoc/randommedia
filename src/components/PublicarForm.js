@@ -12,6 +12,7 @@ import {
 } from "@material-ui/core";
 import { connect } from "react-redux";
 import * as actions from "../actions/publicarActions";
+import useReset from "./useReset";
 
 // import {
 //   KeyboardDatePicker,
@@ -37,40 +38,50 @@ const styles = (theme) => ({
 });
 
 const valoresIniciais = {
-  Categoria: "",
-  Titulo: "",
-  Conteudo: "",
-  Imagem: "",
-  Likeness: "",
-  Tipo: "",
-  Views: "",
-  Pinned: "",
-  Data: "",
-  Utilizador: "",
+  postCategory: "",
+  postTitle: "",
+  postContent: "",
+  postImage: "",
+  postLikeness: "",
+  postType: "",
+  postViews: "",
+  pinnedPost: "",
+  postDate: "",
+  username: "",
 };
 
 const PublicarForm = ({ classes, ...props }) => {
   const validate = () => {
-    let temp = {};
-    temp.Categoria = values.Categoria
+    let temp = { ...errors };
+    temp.postCategory = values.postCategory
       ? ""
       : "Campo de preenchimento necessario"; // se existir um valor, error message ta vazia. se nao existir error messagem tem o preenchimento
-    temp.Titulo = values.Titulo ? "" : "Campo de preenchimento necessario";
-    temp.Likeness = values.Likeness ? "" : "Campo de preenchimento necessario";
-    temp.Tipo = values.Tipo ? "" : "Campo de preenchimento necessario";
-    temp.Views = values.Views ? "" : "Campo de preenchimento necessario";
-    temp.Pinned = values.Pinned ? "" : "Campo de preenchimento necessario";
-    temp.Data = values.Data ? "" : "Campo de preenchimento necessario";
-    temp.Utilizador = values.Utilizador
+    temp.postTitle = values.postTitle
       ? ""
       : "Campo de preenchimento necessario";
+    temp.postLikeness = values.postLikeness
+      ? ""
+      : "Campo de preenchimento necessario";
+    temp.postType = values.postType ? "" : "Campo de preenchimento necessario";
+    temp.postViews = values.postViews
+      ? ""
+      : "Campo de preenchimento necessario";
+    temp.pinnedPost = values.pinnedPost
+      ? ""
+      : "Campo de preenchimento necessario";
+    temp.postDate = values.postDate ? "" : "Campo de preenchimento necessario";
+    temp.username = values.username ? "" : "Campo de preenchimento necessario";
     setErrors({
       ...temp,
     });
     return Object.values(temp).every((x) => x == ""); //devolve o array e verifica se algum dos objetos no array é uma empty string
   };
+
+  const { resetForm } = useReset(valoresIniciais, validate, props.setCurrentId);
+
   const [values, setValues] = useState(valoresIniciais);
   const [errors, setErrors] = useState({});
+  console.log(values.postCategory);
 
   //trata dos inputs do form
   const handleInputChange = (e) => {
@@ -85,8 +96,9 @@ const PublicarForm = ({ classes, ...props }) => {
     e.preventDefault(); //parar o comportamento default do html
     console.log(values);
     if (validate()) {
-      if (props.currentId == 0)
+      if (props.currentId === 0)
         //se igual a 0 fazemos insert
+
         props.createPublicar(values, () => {
           window.alert("Dados Inseridos na Base de dados");
         });
@@ -96,14 +108,19 @@ const PublicarForm = ({ classes, ...props }) => {
           window.alert("Dados Atualizados na Base de dados");
         });
     }
+    resetForm();
   };
 
   useEffect(() => {
-    if (props.currentId !== 0)
+    if (props.currentId !== 0) {
       //se nao estiver a 0, da update aos setvalues
       setValues({
-        ...props.publicarList.find((x) => x.id === props.currentId),
+        ...props.publicarList.find((x) => x.postID === props.currentId),
       });
+      setErrors({});
+    }
+    // console.log(props.publicarList.find((x) => x.postID === props.currentId));
+    // console.log(values);
   }, [props.currentId]); //so faz render quando existe mudança no currentid
 
   return (
@@ -118,135 +135,113 @@ const PublicarForm = ({ classes, ...props }) => {
           <Grid container>
             <Grid item xs={12}>
               <TextField
-                name="Categoria"
-                value={values.Categoria}
+                name="postCategory"
+                value={values.postCategory}
                 label="Nome categoria"
                 onChange={handleInputChange}
                 variant="outlined"
-                {...(errors.Categoria && {
+                {...(errors.postCategory && {
                   error: true,
-                  helperText: errors.Categoria,
+                  helperText: errors.postCategory,
                 })} //verifica se existe algum erro, se sim mostra o error como true e muda o helper text
               ></TextField>
               <TextField
-                name="Titulo"
-                value={values.Titulo}
+                name="postTitle"
+                value={values.postTitle}
                 label="Titulo do post"
                 onChange={handleInputChange}
-                {...(errors.Titulo && {
+                {...(errors.postTitle && {
                   error: true,
-                  helperText: errors.Titulo,
+                  helperText: errors.postTitle,
                 })} //verifica se existe algum erro, se sim mostra o error como true e muda o helper text
                 variant="outlined"
               ></TextField>
               <TextField
-                name="Conteudo"
-                value={values.Conteudo}
+                name="postContent"
+                value={values.postContent}
                 label="Conteudo do post"
                 onChange={handleInputChange}
                 variant="outlined"
-                {...(errors.Conteudo && {
+                {...(errors.postContent && {
                   error: true,
-                  helperText: errors.Conteudo,
+                  helperText: errors.postContent,
                 })} //verifica se existe algum erro, se sim mostra o error como true e muda o helper text
               ></TextField>
               <TextField
-                name="Imagem"
-                value={values.Imagem}
+                name="postImage"
+                value={values.postImage}
                 label="URL da imagem do post"
                 onChange={handleInputChange}
                 variant="outlined"
-                {...(errors.Imagem && {
+                {...(errors.postImage && {
                   error: true,
-                  helperText: errors.Imagem,
+                  helperText: errors.postImage,
                 })} //verifica se existe algum erro, se sim mostra o error como true e muda o helper text
               ></TextField>
               <TextField
-                name="Likeness"
-                value={values.Likeness}
+                name="postLikeness"
+                value={values.postLikeness}
                 label="Likes do post"
                 onChange={handleInputChange}
                 variant="outlined"
-                {...(errors.Likeness && {
+                {...(errors.postLikeness && {
                   error: true,
-                  helperText: errors.Likeness,
+                  helperText: errors.postLikeness,
                 })} //verifica se existe algum erro, se sim mostra o error como true e muda o helper text
               ></TextField>
               <TextField
-                name="Tipo"
-                value={values.Tipo}
-                label="Tipo de post"
+                name="postType"
+                value={values.postType}
+                label="Tipos de post"
                 onChange={handleInputChange}
                 variant="outlined"
-                {...(errors.Tipo && {
+                {...(errors.postType && {
                   error: true,
-                  helperText: errors.Tipo,
+                  helperText: errors.postType,
                 })} //verifica se existe algum erro, se sim mostra o error como true e muda o helper text
               ></TextField>
               <TextField
-                name="Views"
-                value={values.Views}
-                label="Views do post (apenas teste)"
+                name="pinnedPost"
+                value={values.pinnedPost}
+                label="Post fixado?"
                 onChange={handleInputChange}
                 variant="outlined"
-                {...(errors.Views && {
+                {...(errors.pinnedPost && {
                   error: true,
-                  helperText: errors.Views,
+                  helperText: errors.pinnedPost,
                 })} //verifica se existe algum erro, se sim mostra o error como true e muda o helper text
               ></TextField>
-              {/* <FormControl
-                className={classes.formControl}
-                {...(errors.Pinned && { error: true })}
-              >
-                <InputLabel>Pinned Post</InputLabel>
-                <Select
-                  name="Pinned"
-                  value={values.Pinned}
-                  onChange={handleInputChange}
-                >
-                  <MenuItem value="">Quer destacar o post?</MenuItem>
-                  <MenuItem value="true">Sim</MenuItem>
-                  <MenuItem value="false">Nao</MenuItem>
-                </Select>
-                {errors.pinned && (
-                  <FormHelperText>{errors.pinned}</FormHelperText>
-                )}
-              </FormControl> */}
-              {/* <MuiPickersUtilsProvider utils={DateFnsUtils}>
-                <KeyboardDatePicker
-                  disableToolbar
-                  variant="inline"
-                  format="MM/dd/yyyy"
-                  margin="normal"
-                  id="date-picker-inline"
-                  label="Date picker inline"
-                  value={values.Data}
-                  onChange={handleInputChange}
-                  KeyboardButtonProps={{
-                    "aria-label": "change date",
-                  }}
-                />
-              </MuiPickersUtilsProvider> */}
               <TextField
-                name="Data"
-                value={values.Data}
+                name="postViews"
+                value={values.postViews}
+                label="Visualizações do post"
+                onChange={handleInputChange}
+                variant="outlined"
+                {...(errors.postViews && {
+                  error: true,
+                  helperText: errors.postViews,
+                })} //verifica se existe algum erro, se sim mostra o error como true e muda o helper text
+              ></TextField>
+              <TextField
+                name="postDate"
+                value={values.postDate}
                 label="Data de criação do post"
                 onChange={handleInputChange}
                 variant="outlined"
-                {...(errors.Data && {
+                {...(errors.postDate && {
                   error: true,
-                  helperText: errors.Data,
+                  helperText: errors.postDate,
                 })} //verifica se existe algum erro, se sim mostra o error como true e muda o helper text
               ></TextField>
               <TextField
-                name="Utilizador"
-                value={values.Utilizador}
-                label="Nome do Utilizador"
+                name="username"
+                value={values.username}
+                label="Nome do utilizador"
                 onChange={handleInputChange}
                 variant="outlined"
-                {...(errors.Utilizador && {
+                {...(errors.username && {
                   error: true,
-                  helperText: errors.Utilizador,
+                  helperText: errors.username,
                 })} //verifica se existe algum erro, se sim mostra o error como true e muda o helper text
               ></TextField>
               <div>
@@ -262,6 +257,7 @@ const PublicarForm = ({ classes, ...props }) => {
                   variant="contained"
                   color="secundary"
                   className={classes.smMargin}
+                  onClick={resetForm}
                 >
                   Reset
                 </Button>
@@ -290,3 +286,41 @@ export default connect(
   mapStateToProps,
   mapActionToProps
 )(withStyles(styles)(PublicarForm));
+
+{
+  /* <FormControl
+                className={classes.formControl}
+                {...(errors.Pinned && { error: true })}
+              >
+                <InputLabel>Pinned Post</InputLabel>
+                <Select
+                  name="Pinned"
+                  value={values.Pinned}
+                  onChange={handleInputChange}
+                >
+                  <MenuItem value="">Quer destacar o post?</MenuItem>
+                  <MenuItem value="true">Sim</MenuItem>
+                  <MenuItem value="false">Nao</MenuItem>
+                </Select>
+                {errors.pinned && (
+                  <FormHelperText>{errors.pinned}</FormHelperText>
+                )}
+              </FormControl> */
+}
+{
+  /* <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                <KeyboardDatePicker
+                  disableToolbar
+                  variant="inline"
+                  format="MM/dd/yyyy"
+                  margin="normal"
+                  id="date-picker-inline"
+                  label="Date picker inline"
+                  value={values.postDate}
+                  onChange={handleInputChange}
+                  KeyboardButtonProps={{
+                    "aria-label": "change date",
+                  }}
+                />
+              </MuiPickersUtilsProvider> */
+}

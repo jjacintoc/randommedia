@@ -24,6 +24,11 @@ const Publicar = (props) => {
     props.fetchAllPublicar();
     console.log(props);
   }, []);
+
+  const onDelete = (postID) => {
+    if (window.confirm("tem a certeza que quer apagar este registo?"))
+      props.deletePublicar(postID, () => window.alert("Registo apagado"));
+  };
   return (
     <>
       <section id="publicar">
@@ -78,7 +83,10 @@ const Publicar = (props) => {
                               ></EditIcon>
                             </Button>
                             <Button>
-                              <DeleteIcon color="primary"></DeleteIcon>
+                              <DeleteIcon
+                                color="primary"
+                                onClick={() => onDelete(record.postID)}
+                              ></DeleteIcon>
                             </Button>
                           </ButtonGroup>
                         </td>
@@ -104,6 +112,7 @@ const mapStateToProps = (state) => {
 
 const mapActionToProps = {
   fetchAllPublicar: actions.fetchAll,
+  deletePublicar: actions.Delete,
 };
 
 export default connect(mapStateToProps, mapActionToProps)(Publicar);
