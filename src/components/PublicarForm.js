@@ -38,6 +38,7 @@ const styles = (theme) => ({
 });
 
 const valoresIniciais = {
+  //postID: 0,
   postCategory: "",
   postTitle: "",
   postContent: "",
@@ -77,11 +78,19 @@ const PublicarForm = ({ classes, ...props }) => {
     return Object.values(temp).every((x) => x == ""); //devolve o array e verifica se algum dos objetos no array é uma empty string
   };
 
-  const { resetForm } = useReset(valoresIniciais, validate, props.setCurrentId);
+  //const { resetForm } = useReset(valoresIniciais, validate, props.setCurrentId);
+
+  const resetForm = (setCurrentId) => {
+    setValues({
+      ...valoresIniciais,
+    });
+    setErrors({});
+    //setCurrentId(0);
+  };
 
   const [values, setValues] = useState(valoresIniciais);
   const [errors, setErrors] = useState({});
-  console.log(values.postCategory);
+  //console.log(values.postCategory);
 
   //trata dos inputs do form
   const handleInputChange = (e) => {
@@ -90,12 +99,14 @@ const PublicarForm = ({ classes, ...props }) => {
       ...values,
       [name]: value,
     });
+    //validate();
   };
 
   const handleSubmit = (e) => {
     e.preventDefault(); //parar o comportamento default do html
     console.log(values);
     if (validate()) {
+      console.log(values);
       if (props.currentId === 0)
         //se igual a 0 fazemos insert
 

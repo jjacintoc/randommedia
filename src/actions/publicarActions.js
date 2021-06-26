@@ -7,10 +7,10 @@ export const ACTION_TYPES = {
   FETCH_ALL: "FETCH_ALL",
 };
 
-const formatConteudo = (data) => ({
-  ...data,
-  postContent: data.postDate ? data.postDate : "este post não tem conteudo", //verifica se o post content esta vazio, se estiver coloca a string
-});
+// const formatConteudo = (data) => ({
+//   ...data,
+//   postContent: data.postDate ? data.postDate : "este post não tem conteudo", //verifica se o post content esta vazio, se estiver coloca a string
+// });
 
 export const fetchAll = () => (dispatch) => {
   //get api request, resposta que vem da api do .dot net
@@ -29,7 +29,7 @@ export const fetchAll = () => (dispatch) => {
 
 //data que queremos inserir, depois callback function para executar no fim do insert
 export const create = (data, onSuccess) => (dispatch) => {
-  data = formatConteudo(data);
+  //data = formatConteudo(data);
   api
     .publicar()
     .create(data)
@@ -45,7 +45,7 @@ export const create = (data, onSuccess) => (dispatch) => {
 
 //update
 export const update = (id, data, onSuccess) => (dispatch) => {
-  data = formatConteudo(data);
+  //data = formatConteudo(data);
   api
     .publicar()
     .update(id, data)
